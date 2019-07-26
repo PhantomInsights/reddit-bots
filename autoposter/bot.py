@@ -46,7 +46,7 @@ def update_log(url):
         temp_file.write(url + "\n")
 
 
-def download():
+def init_bot():
     """Reads the RSS feed."""
 
     # We create the Reddit instance.
@@ -77,4 +77,4 @@ def download():
 
 if __name__ == "__main__":
 
-    download()
+    init_bot()
