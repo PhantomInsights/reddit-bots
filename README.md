@@ -22,3 +22,19 @@ This bot grabs the top 3 links from a Google News RSS feed and posts them to an 
 It is scheduled to run every 6 hours.
 
 `0 */6 * * * cd /home/pi/Documents/autoposter && python3 bot.py`
+
+## FinanceBot
+
+This bot grabs data from 2 websites, the first one it performs web scraping and gets 3 values from each currency pair it requests.
+
+From the other site it reads a JSON feed and applies some light formatting.
+
+This bot works on both old and new Reddit. For old Reddit it updates the sidebar and for new Reddit it updates an specific sidebar text widget.
+
+New Reddit widgets don't show their id's on the API so we need to iterate over all of them until we find the desired one.
+
+A sidebar.txt file is included which can contain your subreddit introduction, rules and other important information. The contents of this file are then appended with a `Markdown` table and a footer.
+
+It is scheduled to run every 3 hours.
+
+`0 */3 * * * cd /home/pi/Documents/financebot && python3 bot.py`
