@@ -40,7 +40,7 @@ It is scheduled to run every 3 hours.
 
 `0 */3 * * * cd /home/pi/Documents/financebot && python3 bot.py`
 
-# StickyBot
+## StickyBot
 
 This bot creates discussion threads, stickies them and after a day it unstickies them.
 
