@@ -12,6 +12,7 @@ To prevent duplicate actions most bots keep a local log of their actions in a .t
 
 Python 3 is used to develop and test all the bots. The bots use the following libraries.
 
+* BeautifulSoup - Used to perform web scraping.
 * PRAW - Makes the use of the REddit API very easy.
 * Requests - Used to make GET requests.
 
@@ -38,3 +39,40 @@ A sidebar.txt file is included which can contain your subreddit introduction, ru
 It is scheduled to run every 3 hours.
 
 `0 */3 * * * cd /home/pi/Documents/financebot && python3 bot.py`
+
+# StickyBot
+
+This bot creates discussion threads, stickies them and after a day it unstickies them.
+
+The bot starts by reading the system arguments which are:
+
+* The file path
+* Action - sticky/unsticky
+* Day - monday/wednesday/friday
+
+From there it calls the respective function.
+
+Currently there are 3 discussions:
+
+* Monday - This submission contains the 3 top posts from last week. It gets posted and stickied every Monday at 9 am and gets unsticked every Tuesday at 9 pm.
+* Wednesday - This submission takes a random politician from a predefined pool and asks the users what they thing about them. It gets posted and stickied every Wednesday at 9 am and gets unsticked every Thursday at 9 pm.
+* Friday - Casual discussion. It gets posted and stickied every Friday at 9 am and gets unsticked every Saturday at 9 pm.
+
+```
+0 9 * * 1 cd /home/pi/Documents/stickybot && python3 bot.py sticky monday
+0 21 * * 2 cd /home/pi/Documents/stickybot && python3 bot.py unsticky monday
+
+0 9 * * 3 cd /home/pi/Documents/stickybot && python3 bot.py sticky wednesday
+0 21 * * 4 cd /home/pi/Documents/stickybot && python3 bot.py unsticky wednesday
+
+0 9 * * 5 cd /home/pi/Documents/stickybot && python3 bot.py sticky friday
+0 21 * * 6 cd /home/pi/Documents/stickybot && python3 bot.py unsticky friday
+```
+
+## Conclusion
+
+Enhancing the features of the subreddits I manage with these bots has been a positive experience for me and their communities.
+
+I hope you find them useful and inspire you to create your own bots. Also feel free to use them on your own subreddits.
+
+[![Become a Patron!](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/bePatron?u=20521425)
