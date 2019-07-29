@@ -19,7 +19,7 @@ INVESTING_DICT = {
     "EUR/MXN": "https://mx.investing.com/currencies/eur-mxn",
     "GBP/MXN": "https://mx.investing.com/currencies/gbp-mxn",
     "BTC/MXN": "https://www.investing.com/crypto/bitcoin/btc-mxn",
-    "IPC (MMV)": "https://mx.investing.com/indices/ipc"
+    "IPC (BMV)": "https://mx.investing.com/indices/ipc"
 }
 
 CETES_URL = "https://www.cetesdirecto.com/sites/cetes/ticker.json"
