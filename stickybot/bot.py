@@ -18,10 +18,6 @@ POLITICIANS_FILE = "./politicians.txt"
 PROCESSED_POLITICIANS_FILE = "./processed_politicians.txt"
 
 
-TOP_LAST_WEEK = "https://www.reddit.com/r/{}/top/.json?sort=top&t=week".format(
-    config.SUBREDDIT)
-
-
 def init_bot():
     """Inits the bot, reads the system arguments and chooses the correct function."""
 
