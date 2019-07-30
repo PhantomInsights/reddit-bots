@@ -52,6 +52,21 @@ The bot starts by reading the system arguments which are:
 
 From there it calls the respective function.
 
+I implemented  a simple templating system where the post text is read from a .txt file and then replaces placeholder variables, for example:
+
+template_file.txt
+
+```
+Hey there, today is %TODAY% this is some example post.
+```
+
+Python code
+
+```python
+text = open("template_file.txt").read().replace("%TODAY%", today_variable)
+```
+
+
 Currently there are 3 discussions:
 
 * Monday - This submission contains the 3 top posts from last week. It gets posted and stickied every Monday at 9 am and gets unsticked every Tuesday at 9 pm.

@@ -1,0 +1,13 @@
+La discusión de esta semana es acerca de %POLITICIAN%.
+
+* ¿Cual es tu opinión general acerca de la persona antes mencionada?
+
+
+* ¿Qué te parece su trayectoria politica?
+
+
+* ¿Algo adicional que te gustaria compartir?
+
+
+Este hilo es creado automáticamente cada Miércoles por la mañana, se toma un nombre al azar de una
+lista de politicos influyentes evitando repeticiones hasta que todos hayan salido al menos una vez.

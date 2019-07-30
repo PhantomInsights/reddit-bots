@@ -6,7 +6,7 @@ This bot automates the process of making posts and sticky/unsticking them.
 import random
 import sys
 from datetime import datetime
-
+import os
 import praw
 
 import config
@@ -14,6 +14,11 @@ import config
 MONDAY_FILE = "./monday.txt"
 WEDNESDAY_FILE = "./wednesday.txt"
 FRIDAY_FILE = "./friday.txt"
+
+MONDAY_TEMPLATE_FILE = "./templates/monday_template.txt"
+WEDNESDAY_TEMPLATE_FILE = "./templates/wednesday_template.txt"
+FRIDAY_TEMPLATE_FILE = "./templates/friday_template.txt"
+
 POLITICIANS_FILE = "./politicians.txt"
 PROCESSED_POLITICIANS_FILE = "./processed_politicians.txt"
 
@@ -59,19 +64,23 @@ def post_monday(reddit):
 
     """
 
-    title = "¿Qué sucedió en tu estado la semana pasada? Semana {}".format(
-        datetime.now().strftime("%V"))
-
-    text = """¡Feliz inicio de semana Redditores!\n\n
-Este hilo es para discutir acerca de lo que sucedió en tu entidad federativa la semana pasada.\n\n
-Este hilo es creado automáticamente cada Lunes por la mañana y su intención es promover la discusión.
-\n\nEstos fueron los 3 top posts de la semana pasada:\n\n"""
+    posts_text = ""
 
     # Take the top 3 posts from last week and add them to the submission text.
     for submission in reddit.subreddit(config.SUBREDDIT).top("week", limit=3):
+        posts_text += "* [{}](https://redd.it/{})\n".format(
+            submission.title, submission.id)
 
-        text += "* [{}](https://redd.it/{})\n".format(submission.title,
-                                                      submission.id)
+    title = "¿Qué sucedió en tu estado la semana pasada? Semana {}".format(
+        datetime.now().strftime("%V"))
+
+    text = open(MONDAY_TEMPLATE_FILE, "r",
+                encoding="utf-8").read().replace("%POSTS_LIST%", posts_text)
+
+    current_submission = reddit.subreddit(config.SUBREDDIT).submit(
+        title=title, selftext=text)
+
+    quit()
 
     # Submit the text, sticky it and update the log.
     current_submission = reddit.subreddit(config.SUBREDDIT).submit(
@@ -100,17 +109,17 @@ def post_wednesday(reddit):
     for item in load_processed_politicians():
         politicians.remove(item)
 
+    # If our pool is empty we reset the file and try again.
+    if len(politicians) == 0:
+        os.remove(PROCESSED_POLITICIANS_FILE)
+        post_wednesday(reddit)
+
     selected_politician = random.choice(politicians)
 
     title = "Discusión Semanal - {}".format(selected_politician)
 
-    text = """La discusión de esta semana es acerca de {}.\n\n
-¿Cual es tu opinión general acerca de la persona antes mencionada?\n\n
-¿Qué te parece su trayectoria politica?\n\n
-¿Algo adicional que te gustaria compartir?\n\n
-
-Este hilo es creado automáticamente cada Miércoles por la mañana, se toma un nombre al azar de una
-lista de politicos influyentes evitando repeticiones hasta que todos hayan salido al menos una vez.""".format(selected_politician)
+    text = open(WEDNESDAY_TEMPLATE_FILE, "r",
+                encoding="utf-8").read().replace("%POLITICIAN%", selected_politician)
 
     # Submit the text, sticky it and update the log.
     current_submission = reddit.subreddit(config.SUBREDDIT).submit(
@@ -132,11 +141,7 @@ def post_friday(reddit):
     """
 
     title = "¿Qué planes tienes para este fin de semana?"
-
-    text = """¡Feliz fin de semana Redditores!\n\n
-Este hilo es para discutir acerca de lo que planean hacer en su fin de semana o platicar de lo que gusten
-que no sea relacionado a la politica.\n\n
-Este hilo es creado automáticamente cada Viernes por la mañana y su intención es promover la discusión casual."""
+    text = open(FRIDAY_TEMPLATE_FILE, "r", encoding="utf-8").read()
 
     # Submit the text, sticky it and update the log.
     current_submission = reddit.subreddit(config.SUBREDDIT).submit(
@@ -202,7 +207,7 @@ def update_processed_politicians(politician):
 
     """
 
-    with open(POLITICIANS_FILE, "a", encoding="utf-8") as temp_file:
+    with open(PROCESSED_POLITICIANS_FILE, "a", encoding="utf-8") as temp_file:
         temp_file.write(politician + "\n")
 
 
