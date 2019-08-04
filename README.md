@@ -2,7 +2,7 @@
 
 This repository contains a collection of Reddit bots that I use to enhance my subreddits.
 
-These bots have a few things in common, they all run on a `Raspberry Pi`, are scheduled with `crontab` and use the same config.py file.
+These bots have a few things in common, they all run on a `Raspberry Pi`, are scheduled with `crontab` and use the same config.py file. The bots have been tested with Raspbian Buster Lite which comes with Python 3.7.3 pre-installed.
 
 Each bot is separated into their own folder. Feel free to rearrange them as you need.
 
