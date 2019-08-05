@@ -80,8 +80,6 @@ def post_monday(reddit):
     current_submission = reddit.subreddit(config.SUBREDDIT).submit(
         title=title, selftext=text)
 
-    quit()
-
     # Submit the text, sticky it and update the log.
     current_submission = reddit.subreddit(config.SUBREDDIT).submit(
         title=title, selftext=text)
