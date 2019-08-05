@@ -77,9 +77,6 @@ def post_monday(reddit):
     text = open(MONDAY_TEMPLATE_FILE, "r",
                 encoding="utf-8").read().replace("%POSTS_LIST%", posts_text)
 
-    current_submission = reddit.subreddit(config.SUBREDDIT).submit(
-        title=title, selftext=text)
-
     # Submit the text, sticky it and update the log.
     current_submission = reddit.subreddit(config.SUBREDDIT).submit(
         title=title, selftext=text)
