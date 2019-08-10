@@ -4,15 +4,16 @@ of several currency pairs and financial instruments.
 """
 
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import praw
 import requests
 from bs4 import BeautifulSoup
+from xlrd import open_workbook
 
 import config
 
-HEADERS = {"User-Agent": "FinanceBot v0.1"}
+HEADERS = {"User-Agent": "FinanceBot v0.2"}
 
 INVESTING_DICT = {
     "USD/MXN": "https://mx.investing.com/currencies/usd-mxn",
@@ -22,7 +23,8 @@ INVESTING_DICT = {
     "IPC (BMV)": "https://mx.investing.com/indices/ipc"
 }
 
-CETES_URL = "https://www.cetesdirecto.com/sites/cetes/ticker.json"
+BANXICO1_URL = "https://www.banxico.org.mx/SieInternet/consultarDirectorioInternetAction.do?sector=22&accion=consultarCuadro&idCuadro=CF107&locale=es&formatoXLS.x=1&fechaInicio={}&fechaFin={}"
+BANXICO2_URL = "https://www.banxico.org.mx/SieInternet/consultarDirectorioInternetAction.do?accion=consultarCuadro&idCuadro=CF114&formatoXLS.x=1&fechaInicio={}&fechaFin={}"
 
 
 def init_bot():
@@ -37,7 +39,7 @@ def init_bot():
     sidebar_text = open("sidebar.txt", "r", encoding="utf-8").read()
 
     # Start the Markdown table with 3 columns.
-    table_text = """| | | |\n| --- | --- | --- |\n"""
+    table_text = """\n\n| | | |\n| --- | --- | --- |\n"""
 
     # We iterate over INVESTING_DICT and call the same function.
     for k, v in INVESTING_DICT.items():
@@ -45,7 +47,7 @@ def init_bot():
         temp_data = get_investing_data(k, v)
 
         # Add the data to the Markdown table.
-        table_text += "\n\n| {} | {} | {} |\n".format(
+        table_text += "| {} | {} | {} |\n".format(
             temp_data[0], temp_data[1], temp_data[2])
 
         time.sleep(1)
@@ -102,7 +104,9 @@ def get_investing_data(name, url):
 
 
 def get_cetes():
-    """Gets data from Cetesdirecto JSON feed.
+    """Gets data from Banxico Excel archives.
+    It first downloads the Excel files and then reads
+    cell values from the specified rows.
 
     Returns
     -------
@@ -111,19 +115,84 @@ def get_cetes():
 
     """
 
-    cetes_list = list()
+    # The Excel files are behind a simple GET request.
+    # Two of the parameters are UNIX timestamps.
+    now = datetime.now()
+    now_ts = int(now.timestamp()) * 1000
 
-    with requests.get(CETES_URL, headers=HEADERS) as response:
+    last_21_days = now - timedelta(days=21)
+    last_21_days_ts = int(last_21_days.timestamp()) * 1000
 
-        for item in response.json()["datos"]:
+    last_120_days = now - timedelta(days=120)
+    last_120_days_ts = int(last_120_days.timestamp()) * 1000
 
-            kind = item["tipo"].replace(
-                "&ntilde;", "ñ").replace(":", "").strip()
+    # With our timestamps ready we download both files.
+    with requests.get(BANXICO1_URL.format(last_21_days_ts, now_ts)) as response:
+        with open("./banxico1.xls", "wb") as temp_file:
+            temp_file.write(response.content)
 
-            percentage = item["porcentaje"]
-            cetes_list.append([kind, percentage, ""])
+    with requests.get(BANXICO2_URL.format(last_120_days_ts, now_ts)) as response:
+        with open("./banxico2.xls", "wb") as temp_file:
+            temp_file.write(response.content)
 
-        return cetes_list
+    # We open both files and start extracting the values we need.
+    book1 = open_workbook("banxico1.xls")
+    sheet1 = book1.sheet_by_index(0)
+
+    book2 = open_workbook("banxico2.xls")
+    sheet2 = book2.sheet_by_index(0)
+
+    data_list = list()
+
+    data_list.append(["CETES 1 mes", "+{}%".format(find_value(sheet1, 14))])
+    data_list.append(["CETES 3 meses", "+{}%".format(find_value(sheet1, 18))])
+    data_list.append(["CETES 6 meses", "+{}%".format(find_value(sheet1, 22))])
+    data_list.append(["CETES 1 año", "+{}%".format(find_value(sheet2, 15))])
+
+    data_list.append(["BONOS 3 años", "+{}%".format(find_value(sheet1, 48))])
+    data_list.append(["BONOS 5 años", "+{}%".format(find_value(sheet1, 52))])
+    data_list.append(["BONOS 10 años", "+{}%".format(find_value(sheet2, 30))])
+    data_list.append(["BONOS 20 años", "+{}%".format(find_value(sheet2, 31))])
+    data_list.append(["BONOS 30 años", "+{}%".format(find_value(sheet2, 32))])
+
+    data_list.append(
+        ["UDIBONOS 3 años", "+{}% (más inflación)".format(find_value(sheet1, 73))])
+
+    data_list.append(
+        ["UDIBONOS 10 años", "+{}% (más inflación)".format(find_value(sheet1, 81))])
+
+    data_list.append(
+        ["UDIBONOS 30 años", "+{}% (más inflación)".format(find_value(sheet2, 25))])
+
+    return data_list
+
+
+def find_value(sheet, row):
+    """Finds the best available value.
+
+    Parameers
+    ---------
+    sheet : workbook.sheet
+        An Excel sheet.
+
+    row : int
+        The row where the value is located.
+
+    Returns
+    -------
+    string
+        The cell value that wasn't 'N/E' (not eligible).
+
+    """
+
+    # We first try looking in the fifth column and keep falling
+    # back until we go to the third column.
+    if sheet.cell_value(rowx=row, colx=4) != "N/E":
+        return sheet.cell_value(rowx=row, colx=4)
+    elif sheet.cell_value(rowx=row, colx=3) != "N/E":
+        return sheet.cell_value(rowx=row, colx=3)
+    elif sheet.cell_value(rowx=row, colx=2) != "N/E":
+        return sheet.cell_value(rowx=row, colx=2)
 
 
 if __name__ == "__main__":

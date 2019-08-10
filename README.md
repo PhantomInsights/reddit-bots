@@ -28,7 +28,7 @@ It is scheduled to run every 6 hours.
 
 This bot grabs data from 2 websites, the first one it performs web scraping and gets 3 values from each currency pair it requests.
 
-From the other site it reads a JSON feed and applies some light formatting.
+From the other site it downloads 2 Excel files and extracts values from specified rows.
 
 This bot works on both old and new Reddit. For old Reddit it updates the sidebar and for new Reddit it updates an specific sidebar text widget.
 
