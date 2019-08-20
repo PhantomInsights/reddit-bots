@@ -149,14 +149,14 @@ def get_cetes():
     data_list.append(["CETES 6 meses", "+{}%".format(find_value(sheet1, 22))])
     data_list.append(["CETES 1 año", "+{}%".format(find_value(sheet2, 15))])
 
-    data_list.append(["BONOS 3 años", "+{}%".format(find_value(sheet1, 48))])
+    data_list.append(["BONOS 3 años", "+{}%".format(find_value(sheet2, 27))])
     data_list.append(["BONOS 5 años", "+{}%".format(find_value(sheet1, 52))])
     data_list.append(["BONOS 10 años", "+{}%".format(find_value(sheet2, 30))])
     data_list.append(["BONOS 20 años", "+{}%".format(find_value(sheet2, 31))])
     data_list.append(["BONOS 30 años", "+{}%".format(find_value(sheet2, 32))])
 
     data_list.append(
-        ["UDIBONOS 3 años", "+{}% (más inflación)".format(find_value(sheet1, 73))])
+        ["UDIBONOS 3 años", "+{}% (más inflación)".format(find_value(sheet2, 21))])
 
     data_list.append(
         ["UDIBONOS 10 años", "+{}% (más inflación)".format(find_value(sheet1, 81))])
@@ -170,7 +170,7 @@ def get_cetes():
 def find_value(sheet, row):
     """Finds the best available value.
 
-    Parameers
+    Parameters
     ---------
     sheet : workbook.sheet
         An Excel sheet.
