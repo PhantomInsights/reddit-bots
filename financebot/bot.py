@@ -150,7 +150,7 @@ def get_cetes():
     data_list.append(["CETES 1 año", "+{}%".format(find_value(sheet2, 15))])
 
     data_list.append(["BONOS 3 años", "+{}%".format(find_value(sheet2, 27))])
-    data_list.append(["BONOS 5 años", "+{}%".format(find_value(sheet1, 52))])
+    data_list.append(["BONOS 5 años", "+{}%".format(find_value(sheet2, 28))])
     data_list.append(["BONOS 10 años", "+{}%".format(find_value(sheet2, 30))])
     data_list.append(["BONOS 20 años", "+{}%".format(find_value(sheet2, 31))])
     data_list.append(["BONOS 30 años", "+{}%".format(find_value(sheet2, 32))])
