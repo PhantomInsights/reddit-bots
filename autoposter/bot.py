@@ -15,12 +15,12 @@ NEWS_URL = "https://news.google.com/rss/search?q=ecatepec&hl=es-419&gl=MX&ceid=M
 
 def load_log():
     """Loads the log file and creates it if it doesn't exist.
-    
+
     Returns
     -------
     list
         A list of urls.
-    
+
     """
 
     try:
@@ -54,24 +54,25 @@ def init_bot():
                          user_agent=config.USER_AGENT, username=config.REDDIT_USERNAME,
                          password=config.REDDIT_PASSWORD)
 
-    log = load_log()
-
     with requests.get(NEWS_URL) as response:
 
         root = ET.fromstring(response.text)
 
         # Only read first 3 links.
         for item in root.findall(".//item")[0:3]:
+            
+            log = load_log()
 
-            title = item.find("title").text
+            title = item.find("title").text.split(" - ")[0].strip()
             url = item.find("link").text
 
-            if url not in log:
-                
+            if url not in log and title not in log:
+
                 reddit.subreddit(config.SUBREDDIT).submit(
                     title=title, url=url)
-                
+
                 update_log(url)
+                update_log(title)
                 print("Posted:", url)
 
 
