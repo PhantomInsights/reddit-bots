@@ -63,7 +63,7 @@ def init_bot():
             
             log = load_log()
 
-            title = item.find("title").text.split(" - ")[0].strip()
+            title = item.find("title").text.split(" - ")[0].split(" | ")[0].strip()
             url = item.find("link").text
 
             if url not in log and title not in log:
