@@ -10,7 +10,7 @@ import requests
 import config
 
 LOG_FILE = "./processed_urls.txt"
-NEWS_URL = "https://news.google.com/rss/search?q=ecatepec&hl=es-419&gl=MX&ceid=MX:es-419"
+NEWS_URL = "https://news.google.com/rss/search?q=ecatepec&hl=es-419&gl=MX"
 
 
 def load_log():
