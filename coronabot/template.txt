@@ -1,0 +1,56 @@
+
+# Prevención
+
+En la actualidad no existe una vacuna para prevenir la enfermedad del coronavirus 2019 (COVID-19). La mejor forma de prevenir la enfermedad es evitar la exposición a este virus. Sin embargo, como recordatorio, los CDC siempre recomiendan medidas preventivas cotidianas para ayudar a prevenir la propagación de enfermedades respiratorias. Estas medidas incluyen:
+
+* Evitar el contacto cercano con personas enfermas.
+* Evitar tocarse los ojos, la nariz y la boca.
+* Quedarse en casa si está enfermo.
+* Cubrirse la nariz y la boca con un pañuelo desechable al toser o estornudar y luego botarlo a la basura.
+* Limpiar y desinfectar los objetos y las superficies que se tocan frecuentemente, usando un producto común de limpieza de uso doméstico en rociador o toallita.
+* Seguir las recomendaciones de los CDC sobre el uso de mascarillas.
+ * Los CDC no han hecho recomendaciones para que las personas que no están enfermas usen mascarillas para protegerse de enfermedades respiratorias, incluso del COVID-19.
+ * Las personas que presentan síntomas del COVID-19 deberían usar mascarillas para ayudar a prevenir la propagación de la enfermedad a los demás. El uso de mascarillas es también esencial para los trabajadores de la salud y las personas que cuidan de alguien en un entorno cerrado (en la casa o en un establecimiento de atención médica).
+* Lávese las manos frecuentemente con agua y jabón por al menos 20 segundos, especialmente después de ir al baño, antes de comer, y después de sonarse la nariz, toser o estornudar.
+ * Si no cuenta con agua ni jabón, use un desinfectante de manos que contenga al menos un 60 % de alcohol. Lávese las manos siempre con agua y jabón si están visiblemente sucias.
+
+[Fuente](https://www.cdc.gov/coronavirus/2019-ncov/about/prevention-treatment-sp.html)
+
+# Síntomas
+
+En los casos confirmados de la enfermedad del coronavirus 2019 (COVID-19), las enfermedades reportadas han variado de tener síntomas leves a enfermedades graves, y hasta produjeron muertes. Los síntomas pueden incluir:
+
+* Fiebre
+* Tos
+* Dificultad para respirar
+
+Los CDC creen, en este momento, que los síntomas del COVID-19 podrían aparecer en tan solo 2 días o hasta 14 días después de la exposición.
+
+[Fuente](https://www.cdc.gov/coronavirus/2019-ncov/about/symptoms-sp.html)
+
+# Cronología
+
+{}
+
+[Fuente](https://es.wikipedia.org/wiki/Pandemia_de_COVID-19_de_2020_en_Mexico)
+
+# Últimas Noticias
+
+{}
+
+# Epidemiología
+
+{}
+
+# Recursos Adicionales
+
+* [r/Coronavirus • Subreddit dedicado a la cobertura del COVID-19](/r/Coronavirus)
+* [r/China_Flu • Otro subreddit dedicado a la cobertura del COVID-19](/r/China_flu)
+* [Nuevo Coronavirus en el mundo COVID-19. Comunicado Técnico Diario](https://www.gob.mx/salud/archivo/prensa?idiom=es)
+* [Mapa en Tiempo Real](https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html?fbclid=IwAR23wyTip-hRIDIVe0r4nNrqg0S_uFZRm740X7Zxc2-dtCtHoAwAMPwroFs#/bda7594740fd40299423467b48e9ecf6)
+* [Artículo Interactivo del NY Times](https://www.nytimes.com/interactive/2020/world/asia/china-coronavirus-contain.html)
+* [Estadísticas Detalladas por País](https://www.worldometers.info/coronavirus/)
+
+******
+
+Este hilo es actualizado cada 2 horas. {}
