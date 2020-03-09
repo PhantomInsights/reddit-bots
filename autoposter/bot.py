@@ -58,8 +58,8 @@ def init_bot():
 
         root = ET.fromstring(response.text)
 
-        # Only read first 3 links.
-        for item in root.findall(".//item")[0:3]:
+        # Only read the first 3 links.
+        for item in root.findall(".//item")[:3]:
             
             log = load_log()
 
