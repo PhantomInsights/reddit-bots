@@ -1,7 +1,7 @@
 
 # Prevención
 
-En la actualidad no existe una vacuna para prevenir la enfermedad del coronavirus 2019 (COVID-19). La mejor forma de prevenir la enfermedad es evitar la exposición a este virus. Sin embargo, como recordatorio, los CDC siempre recomiendan medidas preventivas cotidianas para ayudar a prevenir la propagación de enfermedades respiratorias. Estas medidas incluyen:
+En la actualidad no existe una vacuna para prevenir la enfermedad del coronavirus 2019 (COVID-19). La mejor forma de prevenir la enfermedad es evitar la exposición a este virus. Sin embargo, como recordatorio, los Centros para el Control y Prevencion de Enfermedades (CDC) siempre recomiendan medidas preventivas cotidianas para ayudar a prevenir la propagación de enfermedades respiratorias. Estas medidas incluyen:
 
 * Evitar el contacto cercano con personas enfermas.
 * Evitar tocarse los ojos, la nariz y la boca.
