@@ -37,6 +37,7 @@ def main():
                          password=config.REDDIT_PASSWORD)
 
     reddit.submission("faw77h").edit(submission_text)
+    reddit.submission("fbjtoy").edit(submission_text)
 
 
 def get_latest_news():
@@ -90,7 +91,10 @@ def get_table():
         "Brazil": "Brasil",
         "Ecuador": "Ecuador",
         "Argentina": "Argentina",
-        "Chile": "Chile"
+        "Chile": "Chile",
+        "Philippines": "Filipinas",
+        "France": "Francia",
+        "Germany": "Alemania"
     }
 
     url = "https://en.m.wikipedia.org/wiki/2019%E2%80%9320_coronavirus_outbreak"
@@ -164,16 +168,16 @@ def get_chronology():
             "span", {"id": "Cronología"}).find_next("section")
 
         # Then we segment it on the H3 tags.
-        for item in chronology.find_all("h3"):
+        for item in chronology.find_all("h4"):
 
             # We create a paragraphs list.
             paragraphs = list()
 
             for subitem in item.next_siblings:
 
-                # We only add the paragraphs to our list, if we find an H3 tag
+                # We only add the paragraphs to our list, if we find an h4 tag
                 # we break the loop since it means we are in the next day.
-                if subitem.name == "h3":
+                if subitem.name == "h4":
                     break
                 elif subitem.name == "p":
                     paragraphs.append(
