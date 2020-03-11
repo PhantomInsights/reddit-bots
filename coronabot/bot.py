@@ -24,8 +24,8 @@ def main():
     table = get_table()
 
     # Prepare the footer with the current date and time.
-    now = datetime.now()
-    footer = "\nÚltima actualización: {:%d-%m-%Y a las %H:%M:%S}".format(now)
+    footer = "\nÚltima actualización: {:%d-%m-%Y a las %H:%M:%S}".format(
+        datetime.now())
 
     template = open("./template.txt", "r", encoding="utf-8").read()
 
@@ -37,7 +37,6 @@ def main():
                          password=config.REDDIT_PASSWORD)
 
     reddit.submission("faw77h").edit(submission_text)
-    reddit.submission("fbjtoy").edit(submission_text)
 
 
 def get_latest_news():
