@@ -36,7 +36,7 @@ def main():
                          user_agent=config.USER_AGENT, username=config.REDDIT_USERNAME,
                          password=config.REDDIT_PASSWORD)
 
-    reddit.submission("faw77h").edit(submission_text)
+    reddit.submission("fhkl26").edit(submission_text)
 
 
 def get_latest_news():
@@ -96,7 +96,7 @@ def get_table():
         "Germany": "Alemania"
     }
 
-    url = "https://en.m.wikipedia.org/wiki/2019%E2%80%9320_coronavirus_outbreak"
+    url = "https://en.wikipedia.org/wiki/2019%E2%80%9320_coronavirus_outbreak"
     table_text = "| País | Casos Confirmados | Fallecidos ^\(%) | Recuperados ^\(%) |\n| -- | -- | -- | -- |\n"
 
     with requests.get(url, headers=HEADERS) as response:
@@ -127,10 +127,12 @@ def get_table():
                     break
 
     # Add the totals rows.
-    last_row = soup.find("tr", "sortbottom").find_all("th")
-    cases = int(last_row[1].text.replace(",", "").strip())
-    deaths = int(last_row[2].text.replace(",", "").strip())
-    recoveries = int(last_row[3].text.replace(",", "").strip())
+    totals_row = soup.find("abbr", title="Recoveries").find_next(
+        "tr").find_all("th")
+
+    cases = int(totals_row[1].text.replace(","♣, "").strip())
+    deaths = int(totals_row[2].text.replace(",", "").strip())
+    recoveries = int(totals_row[3].text.replace(",", "").strip())
 
     table_text += "| __{}__ | __{:,}__ | __{:,} ^{}%__ | __{:,} ^{}%__ |\n".format(
         "Global",
@@ -154,7 +156,7 @@ def get_chronology():
 
     """
 
-    url = "https://es.m.wikipedia.org/wiki/Pandemia_de_COVID-19_de_2020_en_Mexico"
+    url = "https://es.m.wikipedia.org/wiki/Pandemia_de_coronavirus_de_2020_en_M%C3%A9xico"
     chronology_text = ""
 
     with requests.get(url, headers=HEADERS) as response:
