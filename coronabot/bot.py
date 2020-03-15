@@ -21,7 +21,8 @@ def main():
 
     chronology = get_chronology()
     links = get_latest_news()
-    table = get_table()
+    international_table = get_international_epidemiology()
+    national_table = get_national_epidemiology()
 
     # Prepare the footer with the current date and time.
     footer = "\nÚltima actualización: {:%d-%m-%Y a las %H:%M:%S}".format(
@@ -29,7 +30,8 @@ def main():
 
     template = open("./template.txt", "r", encoding="utf-8").read()
 
-    submission_text = template.format(chronology, links, table, footer)
+    submission_text = template.format(
+        chronology, links, international_table, national_table, footer)
 
     # We create the Reddit instance.
     reddit = praw.Reddit(client_id=config.APP_ID, client_secret=config.APP_SECRET,
@@ -66,7 +68,59 @@ def get_latest_news():
     return links_string
 
 
-def get_table():
+def get_chronology():
+    """Gets the chronology for the specified url.
+
+    Returns
+    -------
+    str
+        A Markdown formatted string containing paragraphs of chronology.
+
+    """
+
+    url = "https://es.m.wikipedia.org/wiki/Pandemia_de_coronavirus_de_2020_en_M%C3%A9xico"
+    chronology_text = ""
+
+    with requests.get(url, headers=HEADERS) as response:
+
+        soup = BeautifulSoup(response.text, "html.parser")
+        [tag.extract() for tag in soup("sup")]
+
+        # First we look for the chronology section.
+        chronology = soup.find(
+            "span", {"id": "Cronología"}).find_next("section")
+
+        # Then we segment it on the H3 tags.
+        for item in chronology.find_all("h3"):
+
+            # We create a paragraphs list.
+            paragraphs = list()
+
+            for subitem in item.next_siblings:
+
+                # We only add the paragraphs to our list, if we find an h4 tag
+                # we break the loop since it means we are in the next day.
+                if subitem.name == "h3":
+                    break
+                elif subitem.name == "p":
+                    paragraphs.append(
+                        "> " + subitem.text.replace("\t", "").replace("\n", " ").strip() + "\n\n")
+                elif subitem.name == "ul":
+                    for listitem in subitem.find_all("li"):
+                        paragraphs.append(
+                            "> " + listitem.text.replace("\t", "").replace("\n", " ").strip() + "\n\n")
+
+            # Clean up and formatting.
+            item_title = item.text.replace(
+                "\n", "").replace("Editar", "").strip()
+
+            chronology_text += "#### {}\n\n{}".format(
+                item_title, "".join(paragraphs))
+
+    return chronology_text
+
+
+def get_international_epidemiology():
     """Gets the epidemiology table from Wikipedia.
 
     Returns
@@ -130,7 +184,7 @@ def get_table():
     totals_row = soup.find("abbr", title="Recoveries").find_next(
         "tr").find_all("th")
 
-    cases = int(totals_row[1].text.replace(","♣, "").strip())
+    cases = int(totals_row[1].text.replace(",", "").strip())
     deaths = int(totals_row[2].text.replace(",", "").strip())
     recoveries = int(totals_row[3].text.replace(",", "").strip())
 
@@ -146,52 +200,61 @@ def get_table():
     return table_text
 
 
-def get_chronology():
-    """Gets the chronology for the specified url.
+def get_national_epidemiology():
+    """Gets the epidemiology table from Wikipedia.
 
     Returns
     -------
     str
-        A Markdown formatted string containing paragraphs of chronology.
+        A Markdown formatted table containing the values from each state.
 
     """
 
     url = "https://es.m.wikipedia.org/wiki/Pandemia_de_coronavirus_de_2020_en_M%C3%A9xico"
-    chronology_text = ""
+    table_text = "| Estado | Casos Confirmados | Fallecidos ^\(%) | Recuperados ^\(%) |\n| -- | -- | -- | -- |\n"
 
     with requests.get(url, headers=HEADERS) as response:
 
         soup = BeautifulSoup(response.text, "html.parser")
         [tag.extract() for tag in soup("sup")]
 
-        # First we look for the chronology section.
-        chronology = soup.find(
-            "span", {"id": "Cronología"}).find_next("section")
+        for row in soup.find("table", "wikitable").find_all("tr")[3:-2]:
 
-        # Then we segment it on the H3 tags.
-        for item in chronology.find_all("h4"):
+            state = row.find("th").text.replace(
+                "\t", "").replace("\n", " ").strip()
+            tds = row.find_all("td")
 
-            # We create a paragraphs list.
-            paragraphs = list()
+            cases = int(tds[0].text.replace(",", "").strip())
+            deaths = int(tds[1].text.replace(",", "").strip())
+            recoveries = int(tds[2].text.replace(",", "").strip())
 
-            for subitem in item.next_siblings:
+            table_text += "| {} | {:,} | {:,} ^{}% | {:,} ^{}% |\n".format(
+                state,
+                cases,
+                deaths,
+                round(deaths / cases * 100, 2),
+                recoveries,
+                round(recoveries / cases * 100, 2)
+            )
 
-                # We only add the paragraphs to our list, if we find an h4 tag
-                # we break the loop since it means we are in the next day.
-                if subitem.name == "h4":
-                    break
-                elif subitem.name == "p":
-                    paragraphs.append(
-                        "> " + subitem.text.replace("\t", "").replace("\n", " ").strip() + "\n\n")
+    # Add the totals rows.
+    totals_row = soup.find("table", "wikitable").find_all("tr")[
+        2].find_all("th")
 
-            # Clean up and formatting.
-            item_title = item.text.replace(
-                "\n", "").replace("Editar", "").strip()
+    cases = int(totals_row[1].text.replace(",", "").strip())
+    deaths = int(totals_row[2].text.replace(",", "").strip())
+    recoveries = int(totals_row[3].text.replace(",", "").strip())
 
-            chronology_text += "#### {}\n\n{}".format(
-                item_title, "".join(paragraphs))
+    table_text += "| __{}__ | __{:,}__ | __{:,} ^{}%__ | __{:,} ^{}%__ |\n".format(
+        "Total",
+        cases,
+        deaths,
+        round(deaths / cases * 100, 2),
+        recoveries,
+        round(recoveries / cases * 100, 2)
+    )
 
-    return chronology_text
+    return table_text
 
 
 if __name__ == "__main__":
