@@ -147,10 +147,12 @@ def get_international_epidemiology():
         "Chile": "Chile",
         "Philippines": "Filipinas",
         "France": "Francia",
-        "Germany": "Alemania"
+        "Germany": "Alemania",
+        "United Kingdom": "Reino Unido",
+        "Switzerland": "Suiza"
     }
 
-    url = "https://en.wikipedia.org/wiki/2019%E2%80%9320_coronavirus_outbreak"
+    url = "https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data"
     table_text = "| País | Casos Confirmados | Fallecidos ^\(%) | Recuperados ^\(%) |\n| -- | -- | -- | -- |\n"
 
     with requests.get(url, headers=HEADERS) as response:
@@ -158,7 +160,7 @@ def get_international_epidemiology():
         soup = BeautifulSoup(response.text, "html.parser")
         [tag.extract() for tag in soup("sup")]
 
-        for row in soup.find_all("table")[2].find_all("th"):
+        for row in soup.find("table", "wikitable").find_all("th"):
 
             for k, v in countries.items():
 
@@ -180,7 +182,7 @@ def get_international_epidemiology():
 
                     break
 
-    # Add the totals rows.
+    # Add the totals row.
     totals_row = soup.find("abbr", title="Recoveries").find_next(
         "tr").find_all("th")
 
@@ -215,18 +217,20 @@ def get_national_epidemiology():
 
     with requests.get(url, headers=HEADERS) as response:
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text.replace(
+            "\u200b", ""), "html.parser")
         [tag.extract() for tag in soup("sup")]
 
         for row in soup.find("table", "wikitable").find_all("tr")[3:-2]:
 
             state = row.find("th").text.replace(
                 "\t", "").replace("\n", " ").strip()
+
             tds = row.find_all("td")
 
             cases = int(tds[0].text.replace(",", "").strip())
             deaths = int(tds[1].text.replace(",", "").strip())
-            recoveries = int(tds[2].text.replace(",", "").strip())
+            recoveries = int(tds[3].text.replace(",", "").strip())
 
             table_text += "| {} | {:,} | {:,} ^{}% | {:,} ^{}% |\n".format(
                 state,
@@ -236,14 +240,13 @@ def get_national_epidemiology():
                 recoveries,
                 round(recoveries / cases * 100, 2)
             )
-
-    # Add the totals rows.
+    # Add the totals row.
     totals_row = soup.find("table", "wikitable").find_all("tr")[
         2].find_all("th")
 
     cases = int(totals_row[1].text.replace(",", "").strip())
     deaths = int(totals_row[2].text.replace(",", "").strip())
-    recoveries = int(totals_row[3].text.replace(",", "").strip())
+    recoveries = int(totals_row[4].text.replace(",", "").strip())
 
     table_text += "| __{}__ | __{:,}__ | __{:,} ^{}%__ | __{:,} ^{}%__ |\n".format(
         "Total",
