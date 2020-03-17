@@ -47,9 +47,9 @@ This bot reuses concepts from other bots, it was developed to show the latest in
 
 It reads a Google News RSS feed and grabs the first 15 links. It then gets information from Wikipedia using web scraping and fills a template with all this information.
 
-It is scheduled to run every 2 hours.
+It is scheduled to run every hour.
 
-`0 */2 * * * cd /home/pi/Documents/coronabot && python3 bot.py`
+`0 * * * * cd /home/pi/Documents/coronabot && python3 bot.py`
 
 ## StickyBot
 
