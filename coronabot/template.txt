@@ -16,6 +16,12 @@ En la actualidad no existe una vacuna para prevenir la enfermedad del coronaviru
 
 [Fuente](https://www.cdc.gov/coronavirus/2019-ncov/about/prevention-treatment-sp.html)
 
+*****
+
+[__Medidas de prevención para el sector educativo nacional__](https://www.gob.mx/salud/prensa/presentan-salud-y-sep-medidas-de-prevencion-para-el-sector-educativo-nacional-por-covid-19)
+
+*****
+
 # Síntomas
 
 En los casos confirmados de la enfermedad del coronavirus 2019 (COVID-19), las enfermedades reportadas han variado de tener síntomas leves a enfermedades graves, y hasta produjeron muertes. Los síntomas pueden incluir:
@@ -28,7 +34,11 @@ Los CDC creen, en este momento, que los síntomas del COVID-19 podrían aparecer
 
 [Fuente](https://www.cdc.gov/coronavirus/2019-ncov/about/symptoms-sp.html)
 
+*****
+
 __Teléfono de atención para personas con síntomas: 800-0044-800__
+
+******
 
 # Cronología
 
@@ -54,8 +64,10 @@ __Teléfono de atención para personas con síntomas: 800-0044-800__
 
 # Recursos Adicionales
 
+* [Portal Oficial del Gobierno](https://www.gob.mx/salud/documentos/nuevo-coronavirus)
 * [r/Coronavirus • Subreddit dedicado a la cobertura del COVID-19](/r/Coronavirus)
 * [r/China_Flu • Otro subreddit dedicado a la cobertura del COVID-19](/r/China_flu)
+* [Canal Oficial de YouTube de la Secretaría de Salud](https://www.youtube.com/channel/UCu2Uc7YeJmE9mvGG9OK-zbQ)
 * [Nuevo Coronavirus en el mundo COVID-19. Comunicado Técnico Diario](https://www.gob.mx/salud/archivo/prensa?idiom=es)
 * [Mapa en Tiempo Real](https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html?fbclid=IwAR23wyTip-hRIDIVe0r4nNrqg0S_uFZRm740X7Zxc2-dtCtHoAwAMPwroFs#/bda7594740fd40299423467b48e9ecf6)
 * [Artículo Interactivo del NY Times](https://www.nytimes.com/interactive/2020/world/asia/china-coronavirus-contain.html)
@@ -63,4 +75,4 @@ __Teléfono de atención para personas con síntomas: 800-0044-800__
 
 ******
 
-Este hilo es actualizado cada 2 horas. {}
+Este hilo es actualizado cada hora. {}
