@@ -149,7 +149,8 @@ def get_international_epidemiology():
         "France": "Francia",
         "Germany": "Alemania",
         "United Kingdom": "Reino Unido",
-        "Switzerland": "Suiza"
+        "Switzerland": "Suiza",
+        "Colombia": "Colombia"
     }
 
     url = "https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data"
