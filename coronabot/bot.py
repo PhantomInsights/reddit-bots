@@ -78,7 +78,7 @@ def get_chronology():
 
     """
 
-    url = "https://es.m.wikipedia.org/wiki/Pandemia_de_coronavirus_de_2020_en_M%C3%A9xico"
+    url = "https://es.wikipedia.org/wiki/Pandemia_de_enfermedad_por_coronavirus_de_2020_en_M%C3%A9xico"
     chronology_text = ""
 
     with requests.get(url, headers=HEADERS) as response:
@@ -87,35 +87,25 @@ def get_chronology():
         [tag.extract() for tag in soup("sup")]
 
         # First we look for the chronology section.
-        chronology = soup.find(
-            "span", {"id": "Cronología"}).find_next("section")
+        chronology = soup.find("span", {"id": "Cronología"})
 
-        # Then we segment it on the H3 tags.
-        for item in chronology.find_all("h3"):
+        for item in chronology.parent.next_siblings:
 
-            # We create a paragraphs list.
-            paragraphs = list()
-
-            for subitem in item.next_siblings:
-
-                # We only add the paragraphs to our list, if we find an h4 tag
-                # we break the loop since it means we are in the next day.
-                if subitem.name == "h3":
-                    break
-                elif subitem.name == "p":
-                    paragraphs.append(
-                        "> " + subitem.text.replace("\t", "").replace("\n", " ").strip() + "\n\n")
-                elif subitem.name == "ul":
-                    for listitem in subitem.find_all("li"):
-                        paragraphs.append(
-                            "> " + listitem.text.replace("\t", "").replace("\n", " ").strip() + "\n\n")
-
-            # Clean up and formatting.
-            item_title = item.text.replace(
-                "\n", "").replace("Editar", "").strip()
-
-            chronology_text += "#### {}\n\n{}".format(
-                item_title, "".join(paragraphs))
+            # We only add the paragraphs to our list, if we find an h4 tag
+            # we break the loop since it means we are in the next day.
+            if item.name == "h2":
+                break
+            elif item.name == "h3":
+                # Clean up and formatting.
+                chronology_text += "#### {}\n\n".format(
+                    item.text.replace("\n", "").replace("[editar]", "").strip())
+            elif item.name == "p":
+                chronology_text += "> {}\n\n".format(
+                    item.text.replace("\t", "").replace("\n", " ").strip())
+            elif item.name == "ul":
+                for listitem in item.find_all("li"):
+                    chronology_text += "> {}\n\n".format(
+                        listitem.text.replace("\t", "").replace("\n", " ").strip())
 
     return chronology_text
 
@@ -213,25 +203,34 @@ def get_national_epidemiology():
 
     """
 
-    url = "https://es.m.wikipedia.org/wiki/Pandemia_de_coronavirus_de_2020_en_M%C3%A9xico"
+    url = "https://es.wikipedia.org/wiki/Pandemia_de_enfermedad_por_coronavirus_de_2020_en_M%C3%A9xico"
     table_text = "| Estado | Casos Confirmados | Fallecidos ^\(%) | Recuperados ^\(%) |\n| -- | -- | -- | -- |\n"
 
     with requests.get(url, headers=HEADERS) as response:
 
-        soup = BeautifulSoup(response.text.replace(
-            "\u200b", ""), "html.parser")
+        soup = BeautifulSoup(response.text, "html.parser")
         [tag.extract() for tag in soup("sup")]
+
+        total_cases = 0
+        total_deaths = 0
+        total_recoveries = 0
 
         for row in soup.find("table", "wikitable").find_all("tr")[3:-2]:
 
             state = row.find("th").text.replace(
                 "\t", "").replace("\n", " ").strip()
 
-            tds = row.find_all("td")
+            tds = [td.text.encode("ascii", "ignore").decode(
+                "utf-8").replace(",", "").strip() for td in row.find_all("td")]
 
-            cases = int(tds[0].text.replace(",", "").strip())
-            deaths = int(tds[1].text.replace(",", "").strip())
-            recoveries = int(tds[3].text.replace(",", "").strip())
+            cases = int(tds[0])
+            total_cases += cases
+
+            deaths = int(tds[1])
+            total_deaths += deaths
+
+            recoveries = int(tds[3])
+            total_recoveries += recoveries
 
             table_text += "| {} | {:,} | {:,} ^{}% | {:,} ^{}% |\n".format(
                 state,
@@ -241,21 +240,15 @@ def get_national_epidemiology():
                 recoveries,
                 round(recoveries / cases * 100, 2)
             )
+
     # Add the totals row.
-    totals_row = soup.find("table", "wikitable").find_all("tr")[
-        2].find_all("th")
-
-    cases = int(totals_row[1].text.replace(",", "").strip())
-    deaths = int(totals_row[2].text.replace(",", "").strip())
-    recoveries = int(totals_row[4].text.replace(",", "").strip())
-
     table_text += "| __{}__ | __{:,}__ | __{:,} ^{}%__ | __{:,} ^{}%__ |\n".format(
         "Total",
-        cases,
-        deaths,
-        round(deaths / cases * 100, 2),
-        recoveries,
-        round(recoveries / cases * 100, 2)
+        total_cases,
+        total_deaths,
+        round(total_deaths / total_cases * 100, 2),
+        total_recoveries,
+        round(total_recoveries / total_cases * 100, 2)
     )
 
     return table_text
