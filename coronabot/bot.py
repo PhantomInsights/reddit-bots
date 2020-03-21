@@ -31,14 +31,14 @@ def main():
     template = open("./template.txt", "r", encoding="utf-8").read()
 
     submission_text = template.format(
-        chronology, links, international_table, national_table, footer)
+        international_table, national_table, chronology, links, footer)
 
     # We create the Reddit instance.
     reddit = praw.Reddit(client_id=config.APP_ID, client_secret=config.APP_SECRET,
                          user_agent=config.USER_AGENT, username=config.REDDIT_USERNAME,
                          password=config.REDDIT_PASSWORD)
 
-    reddit.submission("fhkl26").edit(submission_text)
+    reddit.submission("flc4cl").edit(submission_text)
 
 
 def get_latest_news():
@@ -135,6 +135,7 @@ def get_international_epidemiology():
         "Ecuador": "Ecuador",
         "Argentina": "Argentina",
         "Chile": "Chile",
+            "Netherlands": "Países Bajos",
         "Philippines": "Filipinas",
         "France": "Francia",
         "Germany": "Alemania",
@@ -148,7 +149,7 @@ def get_international_epidemiology():
 
     with requests.get(url, headers=HEADERS) as response:
 
-        soup = BeautifulSoup(response.text, "html.parser")
+        soup = BeautifulSoup(response.text.replace("–", "0"), "html.parser")
         [tag.extract() for tag in soup("sup")]
 
         for row in soup.find("table", "wikitable").find_all("th"):
@@ -174,8 +175,8 @@ def get_international_epidemiology():
                     break
 
     # Add the totals row.
-    totals_row = soup.find("abbr", title="Recoveries").find_next(
-        "tr").find_all("th")
+    totals_row = soup.find("table", "wikitable").find_all("tr")[
+        2].find_all("th")
 
     cases = int(totals_row[1].text.replace(",", "").strip())
     deaths = int(totals_row[2].text.replace(",", "").strip())
