@@ -38,7 +38,7 @@ def main():
                          user_agent=config.USER_AGENT, username=config.REDDIT_USERNAME,
                          password=config.REDDIT_PASSWORD)
 
-    reddit.submission("flc4cl").edit(submission_text)
+    reddit.submission("ftqklm").edit(submission_text)
 
 
 def get_latest_news():
@@ -135,12 +135,13 @@ def get_international_epidemiology():
         "Ecuador": "Ecuador",
         "Argentina": "Argentina",
         "Chile": "Chile",
-            "Netherlands": "Países Bajos",
+        "Netherlands": "Países Bajos",
         "Philippines": "Filipinas",
         "France": "Francia",
         "Germany": "Alemania",
         "United Kingdom": "Reino Unido",
         "Switzerland": "Suiza",
+        "India": "India",
         "Colombia": "Colombia"
     }
 
@@ -176,7 +177,7 @@ def get_international_epidemiology():
 
     # Add the totals row.
     totals_row = soup.find("table", "wikitable").find_all("tr")[
-        2].find_all("th")
+        1].find_all("th")
 
     cases = int(totals_row[1].text.replace(",", "").strip())
     deaths = int(totals_row[2].text.replace(",", "").strip())
@@ -216,21 +217,21 @@ def get_national_epidemiology():
         total_deaths = 0
         total_recoveries = 0
 
-        for row in soup.find("table", "wikitable").find_all("tr")[3:-2]:
+        for row in soup.find("table", "wikitable").find_all("tr")[2:-3]:
 
-            state = row.find("th").text.replace(
+            state = row.find("td").text.replace(
                 "\t", "").replace("\n", " ").strip()
 
             tds = [td.text.encode("ascii", "ignore").decode(
-                "utf-8").replace(",", "").strip() for td in row.find_all("td")]
+                "utf-8").replace(",", "").replace("-", "0").strip() for td in row.find_all("td")]
 
-            cases = int(tds[0])
+            cases = int(tds[1])
             total_cases += cases
 
-            deaths = int(tds[1])
+            deaths = int(tds[2])
             total_deaths += deaths
 
-            recoveries = int(tds[3])
+            recoveries = int(tds[4])
             total_recoveries += recoveries
 
             table_text += "| {} | {:,} | {:,} ^{}% | {:,} ^{}% |\n".format(
