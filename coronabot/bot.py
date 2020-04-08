@@ -51,7 +51,7 @@ def get_latest_news():
 
     """
 
-    url = "https://news.google.com/rss/search?q=méxico+coronavirus&hl=es-419&gl=MX"
+    url = "https://news.google.com/rss/search?q=méxico+covid-19&hl=es-419&gl=MX"
     links_string = ""
 
     with requests.get(url, headers=HEADERS) as response:
@@ -127,7 +127,7 @@ def get_international_epidemiology():
         "Pakistan": "Pakistán",
         "Italy": "Italia",
         "Japan": "Japón",
-        "China": "China",
+        "China (mainland)": "China",
         "Spain": "España",
         "Iran": "Irán",
         "South Korea": "Corea del Sur",
@@ -157,7 +157,7 @@ def get_international_epidemiology():
 
             for k, v in countries.items():
 
-                if k in row.text:
+                if k == row.text.strip():
                     tds = row.parent.find_all("td")
 
                     cases = int(tds[0].text.replace(",", "").strip())
