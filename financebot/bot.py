@@ -159,7 +159,7 @@ def get_cetes():
         ["UDIBONOS 3 años", "+{}% (más inflación)".format(find_value(sheet2, 21))])
 
     data_list.append(
-        ["UDIBONOS 10 años", "+{}% (más inflación)".format(find_value(sheet1, 81))])
+        ["UDIBONOS 10 años", "+{}% (más inflación)".format(find_value(sheet2, 23))])
 
     data_list.append(
         ["UDIBONOS 30 años", "+{}% (más inflación)".format(find_value(sheet2, 25))])
