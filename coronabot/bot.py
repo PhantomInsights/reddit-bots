@@ -37,8 +37,8 @@ def main():
     reddit = praw.Reddit(client_id=config.APP_ID, client_secret=config.APP_SECRET,
                          user_agent=config.USER_AGENT, username=config.REDDIT_USERNAME,
                          password=config.REDDIT_PASSWORD)
-
-    reddit.submission("ftqklm").edit(submission_text)
+    
+    reddit.submission("g0maf7").edit(submission_text)
 
 
 def get_latest_news():
@@ -128,6 +128,8 @@ def get_international_epidemiology():
         "Italy": "Italia",
         "Japan": "Japón",
         "China (mainland)": "China",
+        "China": "China",
+        "Turkey": "Turquía",
         "Spain": "España",
         "Iran": "Irán",
         "South Korea": "Corea del Sur",
@@ -136,6 +138,8 @@ def get_international_epidemiology():
         "Argentina": "Argentina",
         "Chile": "Chile",
         "Netherlands": "Países Bajos",
+        "Sweden": "Suecia",
+        "Norway": "Noruega",
         "Philippines": "Filipinas",
         "France": "Francia",
         "Germany": "Alemania",
@@ -162,7 +166,8 @@ def get_international_epidemiology():
 
                     cases = int(tds[0].text.replace(",", "").strip())
                     deaths = int(tds[1].text.replace(",", "").strip())
-                    recoveries = int(tds[2].text.replace(",", "").strip())
+                    recoveries = int(tds[2].text.replace(
+                        ",", "").replace(".", "").strip())
 
                     table_text += "| {} | {:,} | {:,} ^{}% | {:,} ^{}% |\n".format(
                         v,
@@ -179,9 +184,14 @@ def get_international_epidemiology():
     totals_row = soup.find("table", "wikitable").find_all("tr")[
         1].find_all("th")
 
-    cases = int(totals_row[1].text.replace(",", "").strip())
-    deaths = int(totals_row[2].text.replace(",", "").strip())
-    recoveries = int(totals_row[3].text.replace(",", "").strip())
+    cases = int(totals_row[1].text.encode(
+        "ascii", "ignore").decode("utf-8").replace(",", "").strip())
+
+    deaths = int(totals_row[2].text.encode(
+        "ascii", "ignore").decode("utf-8").replace(",", "").strip())
+
+    recoveries = int(totals_row[3].text.encode(
+        "ascii", "ignore").decode("utf-8").replace(",", "").strip())
 
     table_text += "| __{}__ | __{:,}__ | __{:,} ^{}%__ | __{:,} ^{}%__ |\n".format(
         "Global",
