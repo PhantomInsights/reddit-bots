@@ -29,13 +29,19 @@ En la actualidad no existe una vacuna para prevenir la enfermedad del coronaviru
 
 # Síntomas
 
-En los casos confirmados de la enfermedad del coronavirus 2019 (COVID-19), las enfermedades reportadas han variado de tener síntomas leves a enfermedades graves, y hasta produjeron muertes. Los síntomas pueden incluir:
+Los síntomas notificados por personas con COVID-19 varían desde aquellos que presentan síntomas leves hasta quienes se enferman gravemente.
+
+Estos síntomas pueden aparecer 2 a 14 días después de la exposición al virus:
 
 * Fiebre
 * Tos
-* Dificultad para respirar
-
-Los CDC creen, en este momento, que los síntomas del COVID-19 podrían aparecer en tan solo 2 días o hasta 14 días después de la exposición.
+* Dificultad para respirar (sentir que le falta el aire)
+* Escalofríos
+* Temblores y escalofríos que no ceden
+* Dolor muscular
+* Dolor de cabeza
+* Dolor de garganta
+* Pérdida reciente del olfato o el gusto
 
 [Fuente](https://www.cdc.gov/coronavirus/2019-ncov/about/symptoms-sp.html)
 
