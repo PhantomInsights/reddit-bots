@@ -37,8 +37,8 @@ def main():
     reddit = praw.Reddit(client_id=config.APP_ID, client_secret=config.APP_SECRET,
                          user_agent=config.USER_AGENT, username=config.REDDIT_USERNAME,
                          password=config.REDDIT_PASSWORD)
-    
-    reddit.submission("g0maf7").edit(submission_text)
+
+    reddit.submission("ga9w4e").edit(submission_text)
 
 
 def get_latest_news():
@@ -129,6 +129,7 @@ def get_international_epidemiology():
         "Japan": "Japón",
         "China (mainland)": "China",
         "China": "China",
+        "Finland": "finlandia",
         "Turkey": "Turquía",
         "Spain": "España",
         "Iran": "Irán",
@@ -154,7 +155,9 @@ def get_international_epidemiology():
 
     with requests.get(url, headers=HEADERS) as response:
 
-        soup = BeautifulSoup(response.text.replace("–", "0"), "html.parser")
+        soup = BeautifulSoup(response.text.replace("–", "0").replace(
+            "—", "0").replace("No data", "0"), "html.parser")
+
         [tag.extract() for tag in soup("sup")]
 
         for row in soup.find("table", "wikitable").find_all("th"):
@@ -166,8 +169,7 @@ def get_international_epidemiology():
 
                     cases = int(tds[0].text.replace(",", "").strip())
                     deaths = int(tds[1].text.replace(",", "").strip())
-                    recoveries = int(tds[2].text.replace(
-                        ",", "").replace(".", "").strip())
+                    recoveries = int(tds[2].text.replace(",", "").strip())
 
                     table_text += "| {} | {:,} | {:,} ^{}% | {:,} ^{}% |\n".format(
                         v,
@@ -267,5 +269,5 @@ def get_national_epidemiology():
 
 
 if __name__ == "__main__":
-
+    
     main()
