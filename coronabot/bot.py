@@ -31,14 +31,14 @@ def main():
     template = open("./template.txt", "r", encoding="utf-8").read()
 
     submission_text = template.format(
-        international_table, national_table, chronology, links, footer)
+        international_table, national_table, links, footer)
 
     # We create the Reddit instance.
     reddit = praw.Reddit(client_id=config.APP_ID, client_secret=config.APP_SECRET,
                          user_agent=config.USER_AGENT, username=config.REDDIT_USERNAME,
                          password=config.REDDIT_PASSWORD)
 
-    reddit.submission("ga9w4e").edit(submission_text)
+    reddit.submission("hl4nl0").edit(submission_text)
 
 
 def get_latest_news():
@@ -130,10 +130,12 @@ def get_international_epidemiology():
         "China (mainland)": "China",
         "China": "China",
         "Finland": "Finlandia",
-        "Russia": "Rusia",
         "Turkey": "Turquía",
         "Spain": "España",
+        "Russia": "Rusia",
         "Iran": "Irán",
+        "South Africa": "Sudáfrica",
+        "Peru": "Perú",
         "South Korea": "Corea del Sur",
         "Brazil": "Brasil",
         "Ecuador": "Ecuador",
@@ -152,7 +154,7 @@ def get_international_epidemiology():
     }
 
     url = "https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data"
-    table_text = "| País | Casos Confirmados | Fallecidos ^\(%) | Recuperados ^\(%) |\n| -- | -- | -- | -- |\n"
+    table_text = "| País | Casos Confirmados | Defunciones ^\(%) | Recuperados ^\(%) |\n| -- | -- | -- | -- |\n"
 
     with requests.get(url, headers=HEADERS) as response:
 
@@ -187,13 +189,13 @@ def get_international_epidemiology():
     totals_row = soup.find("table", "wikitable").find_all("tr")[
         1].find_all("th")
 
-    cases = int(totals_row[1].text.encode(
+    cases = int(totals_row[2].text.encode(
         "ascii", "ignore").decode("utf-8").replace(",", "").strip())
 
-    deaths = int(totals_row[2].text.encode(
+    deaths = int(totals_row[3].text.encode(
         "ascii", "ignore").decode("utf-8").replace(",", "").strip())
 
-    recoveries = int(totals_row[3].text.encode(
+    recoveries = int(totals_row[4].text.encode(
         "ascii", "ignore").decode("utf-8").replace(",", "").strip())
 
     table_text += "| __{}__ | __{:,}__ | __{:,} ^{}%__ | __{:,} ^{}%__ |\n".format(
@@ -218,8 +220,8 @@ def get_national_epidemiology():
 
     """
 
-    url = "https://es.wikipedia.org/wiki/Pandemia_de_enfermedad_por_coronavirus_de_2020_en_M%C3%A9xico"
-    table_text = "| Estado | Casos Confirmados | Fallecidos ^\(%) | Recuperados ^\(%) |\n| -- | -- | -- | -- |\n"
+    url = "https://en.wikipedia.org/wiki/COVID-19_pandemic_in_Mexico"
+    table_text = "| Estado | Casos Confirmados | Defunciones ^\(%) | Recuperados ^\(%) |\n| -- | -- | -- | -- |\n"
 
     with requests.get(url, headers=HEADERS) as response:
 
@@ -230,21 +232,21 @@ def get_national_epidemiology():
         total_deaths = 0
         total_recoveries = 0
 
-        for row in soup.find("table", "wikitable").find_all("tr")[2:-3]:
+        for row in soup.find("table", "wikitable").find_all("tr")[2:-1]:
 
-            state = row.find("td").text.replace(
+            state = row.find("th").text.replace(
                 "\t", "").replace("\n", " ").strip()
 
             tds = [td.text.encode("ascii", "ignore").decode(
                 "utf-8").replace(",", "").replace("-", "0").strip() for td in row.find_all("td")]
 
-            cases = int(tds[1])
+            cases = int(tds[0])
             total_cases += cases
 
             deaths = int(tds[2])
             total_deaths += deaths
 
-            recoveries = int(tds[4])
+            recoveries = int(tds[3])
             total_recoveries += recoveries
 
             table_text += "| {} | {:,} | {:,} ^{}% | {:,} ^{}% |\n".format(
@@ -270,5 +272,5 @@ def get_national_epidemiology():
 
 
 if __name__ == "__main__":
-    
+
     main()
