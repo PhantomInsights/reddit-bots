@@ -51,7 +51,7 @@ def get_latest_news():
 
     """
 
-    url = "https://news.google.com/rss/search?q=méxico+covid-19&hl=es-419&gl=MX"
+    url = "https://news.google.com/rss/search?q=méxico+covid-19+when:1d&hl=es-419&gl=MX"
     links_string = ""
 
     with requests.get(url, headers=HEADERS) as response:
