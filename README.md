@@ -13,7 +13,7 @@ To prevent duplicate actions most bots keep a local log of their actions in a .t
 Python 3 is used to develop and test all the bots. The bots use the following libraries.
 
 * BeautifulSoup - Used to perform web scraping.
-* PRAW - Makes the use of the REddit API very easy.
+* PRAW - Makes the use of the Reddit API very easy.
 * Requests - Used to make GET requests.
 * xlrd - Used to read .xls files.
 
@@ -43,7 +43,7 @@ It is scheduled to run every 3 hours.
 
 ## CoronaBot
 
-This bot reuses concepts from other bots, it was developed to show the latest information for the 2019-2020 coronavirus outbreak.
+This bot reuses concepts from other bots, it was developed to show the latest information for the COVID-19 pandemic.
 
 It reads a Google News RSS feed and grabs the first 15 links. It then gets information from Wikipedia using web scraping and fills a template with all this information.
 
