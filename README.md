@@ -15,7 +15,7 @@ Python 3 is used to develop and test all the bots. The bots use the following li
 * BeautifulSoup - Used to perform web scraping.
 * PRAW - Makes the use of the Reddit API very easy.
 * Requests - Used to make GET requests.
-* xlrd - Used to read .xls files.
+* openpyxl - Used to read .xlsx files.
 
 ## AutoPoster
 
