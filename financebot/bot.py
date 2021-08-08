@@ -9,11 +9,12 @@ from datetime import datetime, timedelta
 import praw
 import requests
 from bs4 import BeautifulSoup
-from xlrd import open_workbook
+from openpyxl import load_workbook
 
 import config
 
-HEADERS = {"User-Agent": "FinanceBot v0.2"}
+HEADERS = {
+    "User-Agent": "FinanceBot v0.3"}
 
 INVESTING_DICT = {
     "USD/MXN": "https://mx.investing.com/currencies/usd-mxn",
@@ -94,11 +95,18 @@ def get_investing_data(name, url):
 
         soup = BeautifulSoup(response.text, "html.parser")
 
-        latest_data = soup.find(
-            "div", {"class": "top bold inlineblock"}).text.strip().split()
+        try:
+            latest_data = soup.find(
+                "div", {"class": "top bold inlineblock"}).text.strip().split()
 
-        price = latest_data[0]
-        percentage = latest_data[2]
+            price = latest_data[0]
+            percentage = latest_data[2]
+        except:
+            price = soup.find(
+                "span", {"data-test": "instrument-price-last"}).text.strip()
+
+            percentage = soup.find(
+                "span", {"data-test": "instrument-price-change-percent"}).text.strip()[1:-1]
 
         return (name, price, percentage)
 
@@ -128,46 +136,49 @@ def get_cetes():
 
     # With our timestamps ready we download both files.
     with requests.get(BANXICO1_URL.format(last_21_days_ts, now_ts)) as response:
-        with open("./banxico1.xls", "wb") as temp_file:
+        with open("./banxico1.xlsx", "wb") as temp_file:
             temp_file.write(response.content)
 
     with requests.get(BANXICO2_URL.format(last_120_days_ts, now_ts)) as response:
-        with open("./banxico2.xls", "wb") as temp_file:
+        with open("./banxico2.xlsx", "wb") as temp_file:
             temp_file.write(response.content)
 
     # We open both files and start extracting the values we need.
-    book1 = open_workbook("banxico1.xls")
-    sheet1 = book1.sheet_by_index(0)
+    book1 = load_workbook("banxico1.xlsx")
+    sheet1 = book1.worksheets[0]
 
-    book2 = open_workbook("banxico2.xls")
-    sheet2 = book2.sheet_by_index(0)
+    book2 = load_workbook("banxico2.xlsx")
+    sheet2 = book2.worksheets[0]
 
     data_list = list()
 
-    data_list.append(["CETES 1 mes", "+{}%".format(find_value(sheet1, 14))])
-    data_list.append(["CETES 3 meses", "+{}%".format(find_value(sheet1, 18))])
-    data_list.append(["CETES 6 meses", "+{}%".format(find_value(sheet1, 22))])
-    data_list.append(["CETES 1 año", "+{}%".format(find_value(sheet2, 15))])
+    data_list.append(["CETES 1 mes", "+{}%".format(find_value(sheet1, 16))])
+    data_list.append(["CETES 3 meses", "+{}%".format(find_value(sheet1, 20))])
+    data_list.append(["CETES 6 meses", "+{}%".format(find_value(sheet1, 24))])
+    data_list.append(["CETES 1 año", "+{}%".format(find_value(sheet1, 28))])
 
-    data_list.append(["BONOS 3 años", "+{}%".format(find_value(sheet2, 27))])
-    data_list.append(["BONOS 5 años", "+{}%".format(find_value(sheet2, 28))])
-    data_list.append(["BONOS 10 años", "+{}%".format(find_value(sheet2, 30))])
-    data_list.append(["BONOS 20 años", "+{}%".format(find_value(sheet2, 31))])
-    data_list.append(["BONOS 30 años", "+{}%".format(find_value(sheet2, 32))])
-
-    data_list.append(
-        ["UDIBONOS 3 años", "+{}% (más inflación)".format(find_value(sheet2, 21))])
+    data_list.append(["BONOS 3 años", "+{}%".format(find_value(sheet2, 29))])
+    data_list.append(["BONOS 5 años", "+{}%".format(find_value(sheet2, 30))])
+    data_list.append(["BONOS 10 años", "+{}%".format(find_value(sheet2, 32))])
+    data_list.append(["BONOS 20 años", "+{}%".format(find_value(sheet2, 33))])
+    data_list.append(["BONOS 30 años", "+{}%".format(find_value(sheet2, 34))])
 
     data_list.append(
-        ["UDIBONOS 10 años", "+{}% (más inflación)".format(find_value(sheet2, 23))])
+        ["UDIBONOS 3 años", "+{}% (más inflación)".format(find_value(sheet2, 23))])
 
     data_list.append(
-        ["UDIBONOS 30 años", "+{}% (más inflación)".format(find_value(sheet2, 25))])
+        ["UDIBONOS 10 años", "+{}% (más inflación)".format(find_value(sheet2, 25))])
+
+    data_list.append(
+        ["UDIBONOS 20 años", "+{}% (más inflación)".format(find_value(sheet2, 26))])
+
+    data_list.append(
+        ["UDIBONOS 30 años", "+{}% (más inflación)".format(find_value(sheet2, 27))])
 
     return data_list
 
 
-def find_value(sheet, row):
+def find_value(sheet, row_number):
     """Finds the best available value.
 
     Parameters
@@ -175,7 +186,7 @@ def find_value(sheet, row):
     sheet : workbook.sheet
         An Excel sheet.
 
-    row : int
+    row_number : int
         The row where the value is located.
 
     Returns
@@ -187,12 +198,14 @@ def find_value(sheet, row):
 
     # We first try looking in the fifth column and keep falling
     # back until we go to the third column.
-    if sheet.cell_value(rowx=row, colx=4) != "N/E":
-        return sheet.cell_value(rowx=row, colx=4)
-    elif sheet.cell_value(rowx=row, colx=3) != "N/E":
-        return sheet.cell_value(rowx=row, colx=3)
-    elif sheet.cell_value(rowx=row, colx=2) != "N/E":
-        return sheet.cell_value(rowx=row, colx=2)
+    if sheet.cell(row=row_number, column=5).value != "N/E":
+        return sheet.cell(row=row_number, column=5).value
+    elif sheet.cell(row=row_number, column=4).value != "N/E":
+        return sheet.cell(row=row_number, column=4).value
+    elif sheet.cell(row=row_number, column=3).value != "N/E":
+        return sheet.cell(row=row_number, column=3).value
+    elif sheet.cell(row=row_number, column=2).value != "N/E":
+        return sheet.cell(row=row_number, column=2).value
 
 
 if __name__ == "__main__":
