@@ -154,7 +154,7 @@ def get_international_epidemiology():
     }
 
     url = "https://en.wikipedia.org/wiki/Template:2019%E2%80%9320_coronavirus_pandemic_data"
-    table_text = "| País | Casos Confirmados | Defunciones ^\(%) | Recuperados ^\(%) |\n| -- | -- | -- | -- |\n"
+    table_text = "| País | Casos Confirmados | Defunciones ^\(%) |\n| -- | -- | -- |\n"
 
     with requests.get(url, headers=HEADERS) as response:
 
@@ -163,31 +163,28 @@ def get_international_epidemiology():
 
         [tag.extract() for tag in soup("sup")]
 
-        for row in soup.find("table", "wikitable").find_all("th"):
+        for row in soup.find("table", "wikitable").find_all("tr"):
 
             for k, v in countries.items():
 
-                if k == row.text.strip():
-                    tds = row.parent.find_all("td")
+                if k in row.text.strip():
+                    tds = row.find_all("td")
 
-                    cases = int(tds[0].text.replace(",", "").strip())
-                    deaths = int(tds[1].text.replace(",", "").strip())
-                    recoveries = int(tds[2].text.replace(",", "").strip())
+                    cases = int(tds[2].text.replace(",", "").strip())
+                    deaths = int(tds[3].text.replace(",", "").strip())
 
-                    table_text += "| {} | {:,} | {:,} ^{}% | {:,} ^{}% |\n".format(
+                    table_text += "| {} | {:,} | {:,} ^{}% |\n".format(
                         v,
                         cases,
                         deaths,
-                        round(deaths / cases * 100, 2),
-                        recoveries,
-                        round(recoveries / cases * 100, 2)
+                        round(deaths / cases * 100, 2)
                     )
 
                     break
 
     # Add the totals row.
     totals_row = soup.find("table", "wikitable").find_all("tr")[
-        1].find_all("th")
+        1].find_all("td")
 
     cases = int(totals_row[2].text.encode(
         "ascii", "ignore").decode("utf-8").replace(",", "").strip())
@@ -195,16 +192,11 @@ def get_international_epidemiology():
     deaths = int(totals_row[3].text.encode(
         "ascii", "ignore").decode("utf-8").replace(",", "").strip())
 
-    recoveries = int(totals_row[4].text.encode(
-        "ascii", "ignore").decode("utf-8").replace(",", "").strip())
-
-    table_text += "| __{}__ | __{:,}__ | __{:,} ^{}%__ | __{:,} ^{}%__ |\n".format(
+    table_text += "| __{}__ | __{:,}__ | __{:,} ^{}%__ |\n".format(
         "Global",
         cases,
         deaths,
-        round(deaths / cases * 100, 2),
-        recoveries,
-        round(recoveries / cases * 100, 2)
+        round(deaths / cases * 100, 2)
     )
 
     return table_text
